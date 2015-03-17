@@ -1,0 +1,154 @@
+-------------------------------------------
+1) Qt: from source, because you need to build with the same compiler as python: vs2008.
+
+wget http://download.qt.io/archive/qt/5.3/5.3.2/single/qt-everywhere-opensource-src-5.3.2.zip
+unzip -o -q qt-everywhere-opensource-src-5.3.2.zip -d .
+cd qt-everywhere-opensource-src-5.3.2
+call "c:\program files\microsoft visual studio 9.0\vc\vcvarsall.bat"
+call configure -prefix %CD%\qtbase -opensource -nomake tests -nomake examples -confirm-license -release -skip WebKit -no-opengl
+
+sed -i.orig s/\(Interlocked.*crement(\)/\1(LONG\*)/g qtmultimedia\src\plugins\directshow\camera\dscamerasession.cpp
+
+
+
+line 107 of qtmultimedia\src\plugins\directshow\camera\dscamerasession.cpp:
+from
+    STDMETHODIMP_(ULONG) AddRef()
+    {
+        return InterlockedIncrement(&m_ref);
+    }
+
+    STDMETHODIMP_(ULONG) Release()
+    {
+        ULONG ref = InterlockedDecrement(&m_ref);
+to
+    STDMETHODIMP_(ULONG) AddRef()
+    {
+        return InterlockedIncrement((LONG*)&m_ref);
+    }
+
+    STDMETHODIMP_(ULONG) Release()
+    {
+        ULONG ref = InterlockedDecrement((LONG*)&m_ref);
+
+nmake
+
+
+Create user env variable:
+QT5_HOME=C:\qt5-path\qt-everywhere-opensource-src-5.3.2
+QMAKESPEC=win32-msvc2008
+
+Add to the user windows path: PATH=%PATH%;%QT5_HOME%\qtbase\bin
+
+copy %QT5_HOME%\gnuwin32\* in %GNUWIN32_HOME%
+
+-------------------------------------------
+
+
+Make a desktop shortcut to preload your Qt path:
+
+CALL "C:\Program Files\Microsoft Visual Studio 9.0\VC\vcvarsall.bat"
+SET _ROOT=C:\qtsrc\qt-5
+SET PATH=%_ROOT%\qtbase\bin;%_ROOT%\gnuwin32\bin;%PATH%
+SET QMAKESPEC=win32-msvc2008
+SET _ROOT=
+
+unzip sip (I'm using sip-4.16.4 + PyQt-gpl-5.3.2)
+cd sip-4.16.4
+python configure.py
+nmake
+nmake install
+
+
+
+----------------------------------
+
+EXE
+wget http://sourceforge.net/projects/numpy/files/NumPy/1.9.2/numpy-1.9.2-win32-superpack-python2.7.exe
+numpy-1.9.2-win32-superpack-python2.7.exe /arch nosse
+wget http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe
+
+wget http://www.stickpeople.com/projects/python/win-psycopg/2.6.0/psycopg2-2.6.0.win32-py2.7-pg9.4.1-release.exe
+
+wget http://downloads.sourceforge.net/project/fpdb/fpdb/pypoker-eval-win32/pokereval-138.win32-py2.7.exe
+
+wget http://sourceforge.net/projects/mysql-python/files/mysql-python/1.2.3/MySQL-python-1.2.3.win32-py2.7.msi
+
+# wget http://www.bytereef.org/software/mpdecimal/releases/cdecimal-2.3.win32-py2.7.msi
+
+# wget http://sourceforge.net/projects/py2exe/files/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
+# patch: sed -i 63,65s/^^#*/#/g C:\PERSO\env\Python27\Lib\site-packages\py2exe\boot_common.py
+
+wget http://download.microsoft.com/download/1/1/1/1116b75a-9ec3-481a-a3c8-1777b5381140/vcredist_x86.exe
+
+
+
+TO BUILD
+wget http://sourceforge.net/projects/pyqt/files/sip/sip-4.16.6/sip-4.16.6.zip
+unzip -o -q sip-4.16.6.zip -d .
+cd sip-4.16.6
+call "C:\Program Files\Microsoft Visual Studio 9.0\VC\vcvarsall.bat"
+python configure.py
+nmake
+nmake install
+
+wget http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.3.2/PyQt-gpl-5.3.2.zip
+unzip -o -q PyQt-gpl-5.3.2.zip -d .
+cd PyQt-gpl-5.3.2
+
+
+I had to edit pyqt-5.3.2's configure script:
+
+--- configure.py.orig	2014-07-04 11:09:11.000000000 +0200
++++ configure.py	2014-09-09 03:13:52.351527684 +0200
+@@ -86,7 +86,7 @@ MODULE_METADATA = {
+     'QtSvg':                ModuleMetadata(qmake_QT=['svg']),
+     'QtTest':               ModuleMetadata(qmake_QT=['testlib', 'widgets']),
+     'QtWebKit':             ModuleMetadata(qmake_QT=['webkit', 'network']),
+-    'QtWebKitWidgets':      ModuleMetadata(qmake_QT=['webkitwidgets']),
++    'QtWebKitWidgets':      ModuleMetadata(qmake_QT=['webkitwidgets', 'printsupport']),
+     'QtWebSockets':         ModuleMetadata(qmake_QT=['websockets']),
+     'QtWidgets':            ModuleMetadata(qmake_QT=['widgets']),
+     'QtWinExtras':          ModuleMetadata(qmake_QT=['winextras', 'widgets']),
+
+sed -i.orig s/\(\['webkitwidgets'\)\(\]\)/\1,'printsupport'\2/g configure.py
+
+call "C:\Program Files\Microsoft Visual Studio 9.0\VC\vcvarsall.bat"
+python configure.py --confirm-license
+nmake
+nmake install
+
+
+PIP
+pip install matplotlib winpaths pytz six python-dateutil pyparsing beautifulsoup xlrd
+
+
+
+
+
+------------------------------
+ONLY if packaging fpdb:
+
+python -m pip install pyinstaller
+pyi-build --distpath=windist -y fpdb.spec
+
+
+
+-------------------------
+requirements.txt
+
+BeautifulSoup==3.2.1
+MySQL-python==1.2.3
+PyInstaller==2.1
+matplotlib==1.4.3
+numpy==1.9.2
+pokereval==138
+psycopg2==2.6
+py2exe==0.6.9
+pyparsing==2.0.3
+python-dateutil==2.4.1
+pytz==2014.10
+pywin32==219
+six==1.9.0
+winpaths==0.2
+xlrd==0.9.3
