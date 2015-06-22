@@ -12,7 +12,7 @@ REM INSTALL WGET & UNZIP UTILITIES (NEEDED FOR LATER)
 start http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-setup.exe
 @echo.
 @echo.
-@echo double-click on the downloaded file, follow the setup process and ***INSTALL in C:\GnuWin32 (important)***
+@echo double-click on the downloaded file, follow the setup process and ***DON'T CHANGE ANY OPTIONS***
 @echo.
 pause
 @echo This window will close, now right-click on file step2.bat and select "Run as Administrator"
