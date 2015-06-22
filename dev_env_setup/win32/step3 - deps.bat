@@ -1,6 +1,6 @@
 @echo OFF
 
-set DEPS="d"
+set DEPS="%CD%\downloaded_dependencies"
 mkdir %DEPS%
 
 REM DOWNLOAD QT AND BUILD FROM SOURCE BECAUSE YOU NEED TO BUILD WITH THE SAME COMPILER AS PYTHON: VS2008
@@ -8,25 +8,35 @@ REM DOWNLOAD QT AND BUILD FROM SOURCE BECAUSE YOU NEED TO BUILD WITH THE SAME CO
 @echo.
 @echo INSTALLING QT 5.3.2
 @echo.
-@echo It lasts for ages! Take a nap...
+@echo It takes ages! Take a nap...
 @echo.
 pause
-wget -nc -c -P %DEPS% http://download.qt.io/archive/qt/5.3/5.3.2/single/qt-everywhere-opensource-src-5.3.2.zip
+wget -nc -c -P %DEPS% "http://www.7-zip.org/a/7za920.zip"
 pushd %DEPS%
-unzip -o -q qt-everywhere-opensource-src-5.3.2.zip -d .
-cd qt-everywhere-opensource-src-5.3.2
+unzip -o -q 7za920.zip -d .
+popd
+
+set QT5_FOLDER=qt5
+set QT5_HOME=C:\%QT5_FOLDER%
+mkdir %QT5_HOME%
+wget -nc -c -P %QT5_HOME% http://download.qt.io/archive/qt/5.3/5.3.2/single/qt-everywhere-opensource-src-5.3.2.zip
+pushd %QT5_HOME%
+%DEPS%\7za.exe x qt-everywhere-opensource-src-5.3.2.zip
+mv qt-everywhere-opensource-src-5.3.2/* .
+del /S /S qt-everywhere-opensource-src-5.3.2
+REM unzip -o -q qt-everywhere-opensource-src-5.3.2.zip -d .
+REM cd qt-everywhere-opensource-src-5.3.2
 call "c:\program files\microsoft visual studio 9.0\vc\vcvarsall.bat"
 call configure -prefix %CD%\qtbase -opensource -nomake tests -nomake examples -confirm-license -release -skip WebKit -no-opengl 2>&1 | tee -a build_qt.log
 sed -i.orig s/\(Interlocked.*crement(\)/\1(LONG\*)/g qtmultimedia\src\plugins\directshow\camera\dscamerasession.cpp
 nmake 2>&1 | tee -a build_qt.log
-setx QT5_HOME "%CD%"
-set QT5_HOME=%CD%
+setx QT5_HOME "%QT5_HOME%"
 setx QMAKESPEC "win32-msvc2008"
 set QMAKESPEC=win32-msvc2008
-setx PATH "%PATH%;%QT5_HOME%\qtbase\bin"
+setx PATH "%GNUWIN32_HOME%\bin;%PYTHON_HOME%;%PYTHON_HOME%\Scripts;%QT5_HOME%\qtbase\bin"
 set PATH=%PATH%;%QT5_HOME%\qtbase\bin
 
-copy %QT5_HOME%\gnuwin32\* %GNUWIN32_HOME%
+xcopy %QT5_HOME%\gnuwin32 "%GNUWIN32_HOME%" /S /Y
 popd
 
 REM INSTALLING MICROSOFT VISUAL C++ 2008 REDISTRIBUABLE PACKAGE
@@ -42,12 +52,12 @@ REM INSTALLING SEVERAL PYTHON LIBRARIES
 @echo.
 @echo.
 @echo INSTALLING Several Python Libraries
-echo Follow the setup process and ***DON'T CHANGE ANY OPTIONS***
+echo Follow setup processes and ***DON'T CHANGE ANY OPTIONS***
 @echo.
 pause
 wget -nc -c -P %DEPS% http://sourceforge.net/projects/numpy/files/NumPy/1.9.2/numpy-1.9.2-win32-superpack-python2.7.exe
 %DEPS%\numpy-1.9.2-win32-superpack-python2.7.exe /arch nosse
-wget -nc -c -P %DEPS% http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe
+wget -nc -c -P %DEPS% "http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe"
 %DEPS%\pywin32-219.win32-py2.7.exe
 wget -nc -c -P %DEPS% http://www.stickpeople.com/projects/python/win-psycopg/2.6.0/psycopg2-2.6.0.win32-py2.7-pg9.4.1-release.exe
 %DEPS%\psycopg2-2.6.0.win32-py2.7-pg9.4.1-release.exe
@@ -77,6 +87,7 @@ nmake 2>&1 | tee -a build_python_deps.log
 nmake install 2>&1 | tee -a build_python_deps.log
 popd
 
+pip install --upgrade pip 2>&1 | tee -a build_python_deps.log
 pip install matplotlib winpaths pytz six python-dateutil pyparsing beautifulsoup xlrd pyinstaller 2>&1 | tee -a build_python_deps.log
 
 pause

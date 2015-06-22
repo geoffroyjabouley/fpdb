@@ -3,10 +3,10 @@
 REM INSTALL WGET & UNZIP UTILITIES (NEEDED FOR LATER)
 setx GNUWIN32_HOME "C:\GnuWin32"
 set GNUWIN32_HOME=C:\GnuWin32
-setx PATH "%PATH%;%GNUWIN32_HOME%\bin"
+setx PATH "%GNUWIN32_HOME%\bin"
 set PATH=%PATH%;%GNUWIN32_HOME%\bin
 
-set DEPS="downloaded_dependencies"
+set DEPS="%CD%\downloaded_dependencies"
 mkdir %DEPS%
 wget -nc -c -P %DEPS% http://downloads.sourceforge.net/project/gnuwin32/unzip/5.51-1/unzip-5.51-1.exe
 @echo.
@@ -23,7 +23,7 @@ unzip -o %DEPS%\sed-4.2.1-dep.zip -d "%GNUWIN32_HOME%"
 wget -nc -c -P %DEPS% http://downloads.sourceforge.net/project/gnuwin32/sed/4.2.1/sed-4.2.1-bin.zip
 unzip -o %DEPS%\sed-4.2.1-bin.zip -d "%GNUWIN32_HOME%"
 wget -nc -c -P %DEPS% http://downloads.sourceforge.net/project/gnuwin32/grep/2.5.4/grep-2.5.4-dep.zip
-unzip -o \%DEPS%grep-2.5.4-dep.zip -d "%GNUWIN32_HOME%"
+unzip -o %DEPS%\grep-2.5.4-dep.zip -d "%GNUWIN32_HOME%"
 wget -nc -c -P %DEPS% http://downloads.sourceforge.net/project/gnuwin32/grep/2.5.4/grep-2.5.4-bin.zip
 unzip -o %DEPS%\grep-2.5.4-bin.zip -d "%GNUWIN32_HOME%"
 wget -nc -c -P %DEPS% http://downloads.sourceforge.net/project/gnuwin32/zip/3.0/zip-3.0-bin.zip
@@ -61,7 +61,7 @@ pause
 pause
 setx PYTHON_HOME "C:\Python27"
 set PYTHON_HOME=C:\Python27
-setx PATH "%PATH%;%PYTHON_HOME%;%PYTHON_HOME%\Scripts"
+setx PATH "%GNUWIN32_HOME%\bin;%PYTHON_HOME%;%PYTHON_HOME%\Scripts"
 set PATH=%PATH%;%PYTHON_HOME%;%PYTHON_HOME%\Scripts
 
 REM INSTALL VISUAL STUDIO 2008 C++ EXPRESS

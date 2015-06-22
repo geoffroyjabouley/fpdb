@@ -1,6 +1,6 @@
 @echo OFF
 
-set DEPS="downloaded_dependencies"
+set DEPS="%CD%\downloaded_dependencies"
 mkdir %DEPS%
 
 REM DOWNLOAD QT AND BUILD FROM SOURCE BECAUSE YOU NEED TO BUILD WITH THE SAME COMPILER AS PYTHON: VS2008

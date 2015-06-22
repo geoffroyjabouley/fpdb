@@ -8,7 +8,7 @@ set MINGW_HOME=C:\MinGW
 setx PATH "%PATH%;%MINGW_HOME\bin;%MSYS_HOME%\bin"
 set PATH=%PATH%;%MINGW_HOME\bin;%MSYS_HOME%\bin
 
-set DEPS="downloaded_dependencies"
+set DEPS="%CD%\downloaded_dependencies"
 mkdir %DEPS%
 
 REM INSTALL GIT SCM TOOL
