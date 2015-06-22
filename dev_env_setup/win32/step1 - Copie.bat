@@ -5,6 +5,7 @@ start http://www.sevenforums.com/attachments/tutorials/214347d1338396625-open-co
 @echo.
 @echo Right click on the downloaded file and select "Merge"
 @echo Now you can open a command line editor with administrator rights in a folder using the mouse right-click button menu
+@echo.
 pause
 
 REM INSTALL MINGW/MSYS UTILITIES (NEEDED FOR LATER)
@@ -13,8 +14,10 @@ start http://downloads.sourceforge.net/project/mingw/Installer/mingw-get-setup.e
 @echo.
 @echo INSTALLING MINGW/MSYS UTILITIES
 @echo double-click on the downloaded file, follow the setup process and ***INSTALL in C:\MinGW (important)***
+@echo.
 pause
 C:\MinGW\bin\mingw-get.exe install mingw32-base mingw-developer-toolkit msys-base msys-wget msys-unzip msys-zip mingw32-gcc-g++
+@echo.
 @echo This window will close, now right-click on file step2.bat and select "Run as Administrator"
 pause
 @echo ON
