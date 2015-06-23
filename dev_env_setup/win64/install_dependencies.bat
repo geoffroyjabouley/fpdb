@@ -1,7 +1,7 @@
 @echo OFF
 
 REM INSTALL WGET & UNZIP UTILITIES (NEEDED FOR LATER)
-start "http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-setup.exe"
+start http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-setup.exe
 @echo.
 @echo.
 @echo double-click on the downloaded file, follow the setup process and ***INSTALL in folder C:\GnuWin32 (Important)***
@@ -42,19 +42,19 @@ unzip -o "%DEPS%\coreutils-5.3.0-bin.zip" -d "%GNUWIN32_HOME%"
 wget -nc -c -P "%DEPS%" "http://downloads.sourceforge.net/project/gnuwin32/coreutils/5.3.0/coreutils-5.3.0-dep.zip"
 unzip -o "%DEPS%\coreutils-5.3.0-dep.zip" -d "%GNUWIN32_HOME%"
 
-REM INSTALL GIT SCM TOOL
-REM wget -nc -c -P %DEPS% https://github.com/msysgit/msysgit/releases/download/Git-1.9.5-preview20141217/Git-1.9.5-preview20141217.exe
-REM @echo.
-REM @echo.
-REM @echo INSTALLING Git
-REM @echo Follow the setup process, and:
-REM @echo ***INSTALL in C:\Git (important)***
-REM @echo ***Choose option "Use git from the Windows Command Prompt"***
-REM @echo ***Choose option "Checkout as-is, commit as-is"***
-REM @echo.
-REM pause
-REM %DEPS%\Git-1.9.5-preview20141217.exe
-REM pause
+REM REM INSTALL GIT SCM TOOL
+REM REM wget -nc -c -P %DEPS% https://github.com/msysgit/msysgit/releases/download/Git-1.9.5-preview20141217/Git-1.9.5-preview20141217.exe
+REM REM @echo.
+REM REM @echo.
+REM REM @echo INSTALLING Git
+REM REM @echo Follow the setup process, and:
+REM REM @echo ***INSTALL in C:\Git (important)***
+REM REM @echo ***Choose option "Use git from the Windows Command Prompt"***
+REM REM @echo ***Choose option "Checkout as-is, commit as-is"***
+REM REM @echo.
+REM REM pause
+REM REM %DEPS%\Git-1.9.5-preview20141217.exe
+REM REM pause
 
 REM INSTALL PYTHON 2.7
 wget -nc --no-check-certificate -c -P "%DEPS%" "https://www.python.org/ftp/python/2.7.10/python-2.7.10.msi"
@@ -103,7 +103,6 @@ wget -nc -c -P "%QT5_HOME%" "http://download.qt.io/archive/qt/5.3/5.3.2/single/q
 pushd "%QT5_HOME%"
 "%DEPS%\7za.exe" x qt-everywhere-opensource-src-5.3.2.zip > nul
 mv qt-everywhere-opensource-src-5.3.2/* .
-del /S /Q qt-everywhere-opensource-src-5.3.2
 call "c:\program files\microsoft visual studio 9.0\vc\vcvarsall.bat"
 call configure -prefix "%CD%\qtbase" -opensource -nomake tests -nomake examples -confirm-license -release -skip WebKit -no-opengl 2>&1 | tee -a "%DEPS%\build_qt.log"
 sed -i.orig s/\(Interlocked.*crement(\)/\1(LONG\*)/g qtmultimedia\src\plugins\directshow\camera\dscamerasession.cpp
@@ -112,7 +111,6 @@ setx QT5_HOME "%QT5_HOME%"
 setx QMAKESPEC "win32-msvc2008"
 set QMAKESPEC=win32-msvc2008
 set PATH=%PATH%;%QT5_HOME%\qtbase\bin
-
 xcopy "%QT5_HOME%\gnuwin32" "%GNUWIN32_HOME%" /S /Y
 popd
 
@@ -135,7 +133,7 @@ echo Follow setup processes and ***DON'T CHANGE ANY OPTIONS***
 pause
 wget -nc -c -P "%DEPS%" "http://sourceforge.net/projects/numpy/files/NumPy/1.9.2/numpy-1.9.2-win32-superpack-python2.7.exe"
 "%DEPS%\numpy-1.9.2-win32-superpack-python2.7.exe" /arch nosse
-wget -nc -c -P "%DEPS%" "http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe"
+wget -nc -c -P "%DEPS%" "http://sourceforge.net/projects/pywin32/files/pywin32/Build%%20219/pywin32-219.win32-py2.7.exe"
 "%DEPS%\pywin32-219.win32-py2.7.exe"
 wget -nc -c -P "%DEPS%" "http://www.stickpeople.com/projects/python/win-psycopg/2.6.0/psycopg2-2.6.0.win32-py2.7-pg9.4.1-release.exe"
 "%DEPS%\psycopg2-2.6.0.win32-py2.7-pg9.4.1-release.exe"
@@ -165,7 +163,7 @@ nmake 2>&1 | tee -a "%DEPS%\build_python_deps.log"
 nmake install 2>&1 | tee -a "%DEPS%\build_python_deps.log"
 popd
 
-pip install matplotlib winpaths pytz six python-dateutil pyparsing beautifulsoup xlrd pyinstaller 2>&1 | tee -a "%DEPS%\build_python_deps.log"
+pip install -r requirements.txt 2>&1 | tee -a "%DEPS%\build_python_deps.log"
 
 REM SET PATH ENVIRONMENT
 setx PATH "%PATH%"
