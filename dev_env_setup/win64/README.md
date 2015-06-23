@@ -5,6 +5,7 @@ Goal ?
 ----
 
 Starting from freshly installed OS, user shall be able to:
+
 1. Execute the setup script install_dependencies.bat, following setup steps
 2. Generate a working fpdb package using the build script build_fpdb.bat at the root of the repository
 

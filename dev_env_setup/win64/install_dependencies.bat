@@ -96,6 +96,7 @@ pushd "%DEPS%"
 unzip -o -q 7za920.zip -d .
 popd
 
+set QMAKESPEC=win32-msvc2008
 set QT5_FOLDER=qt5
 set QT5_HOME=C:\%QT5_FOLDER%
 mkdir "%QT5_HOME%"
@@ -103,14 +104,15 @@ wget -nc -c -P "%QT5_HOME%" "http://download.qt.io/archive/qt/5.3/5.3.2/single/q
 pushd "%QT5_HOME%"
 "%DEPS%\7za.exe" x qt-everywhere-opensource-src-5.3.2.zip > nul
 mv qt-everywhere-opensource-src-5.3.2/* .
+set NOVS2008_PATH=%PATH%
 call "c:\program files\microsoft visual studio 9.0\vc\vcvarsall.bat"
 call configure -prefix "%CD%\qtbase" -opensource -nomake tests -nomake examples -confirm-license -release -skip WebKit -no-opengl 2>&1 | tee -a "%DEPS%\build_qt.log"
 sed -i.orig s/\(Interlocked.*crement(\)/\1(LONG\*)/g qtmultimedia\src\plugins\directshow\camera\dscamerasession.cpp
 nmake 2>&1 | tee -a "%DEPS%\build_qt.log"
 setx QT5_HOME "%QT5_HOME%"
-setx QMAKESPEC "win32-msvc2008"
-set QMAKESPEC=win32-msvc2008
+setx QMAKESPEC "%QMAKESPEC%"
 set PATH=%PATH%;%QT5_HOME%\qtbase\bin
+set NOVS2008_PATH=%NOVS2008_PATH%;%QT5_HOME%\qtbase\bin
 xcopy "%QT5_HOME%\gnuwin32" "%GNUWIN32_HOME%" /S /Y
 popd
 
@@ -166,7 +168,7 @@ popd
 pip install -r requirements.txt 2>&1 | tee -a "%DEPS%\build_python_deps.log"
 
 REM SET PATH ENVIRONMENT
-setx PATH "%PATH%"
+setx PATH "%NOVS2008_PATH%"
 
 @echo.
 @echo This window will close
