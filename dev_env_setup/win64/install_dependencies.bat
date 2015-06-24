@@ -7,10 +7,11 @@ start http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-setup.exe
 @echo double-click on the downloaded file, follow the setup process and ***INSTALL in folder C:\GnuWin32 (Important)***
 @echo.
 pause
+set GNUWIN32_HOME=C:\GnuWin32
+if not exist %GNUWIN32_HOME%\bin\wget.exe echo "You have not installed the program in %GNUWIN32_HOME% folder. Setup will exit now." && pause && exit
 
 REM INSTALL WGET & UNZIP UTILITIES (NEEDED FOR LATER)
-setx GNUWIN32_HOME "C:\GnuWin32"
-set GNUWIN32_HOME=C:\GnuWin32
+setx GNUWIN32_HOME "%GNUWIN32_HOME%"
 set PATH=%PATH%;%GNUWIN32_HOME%\bin
 
 set DEPS=%CD%\downloaded_dependencies
@@ -105,6 +106,7 @@ pushd "%QT5_HOME%"
 "%DEPS%\7za.exe" x qt-everywhere-opensource-src-5.3.2.zip > nul
 mv qt-everywhere-opensource-src-5.3.2/* .
 set NOVS2008_PATH=%PATH%
+set VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\
 call "c:\program files\microsoft visual studio 9.0\vc\vcvarsall.bat"
 call configure -prefix "%CD%\qtbase" -opensource -nomake tests -nomake examples -confirm-license -release -skip WebKit -no-opengl 2>&1 | tee -a "%DEPS%\build_qt.log"
 sed -i.orig s/\(Interlocked.*crement(\)/\1(LONG\*)/g qtmultimedia\src\plugins\directshow\camera\dscamerasession.cpp

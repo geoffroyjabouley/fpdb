@@ -12,7 +12,7 @@ Starting from freshly installed OS, user shall be able to:
 Requirement ?
 ----
 
-* A working internet connection
+* A working internet connection (approx 500MB of dependencies to download)
 
 Notes
 ----
