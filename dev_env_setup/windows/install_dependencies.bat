@@ -1,5 +1,8 @@
 @echo OFF
 
+set LOCAL_PROGRAM_FILES=%ProgramFiles%
+if exist "C:\Program Files (x86)" set LOCAL_PROGRAM_FILES=%ProgramFiles(x86)%
+
 REM INSTALL WGET & UNZIP UTILITIES (NEEDED FOR LATER)
 start http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-setup.exe
 @echo.
@@ -83,6 +86,8 @@ wget -nc -c -P "%DEPS%" "http://go.microsoft.com/?linkid=7729279"
 pause
 call "%DEPS%\vcsetup.exe"
 pause
+set NOVS2008_PATH=%PATH%
+set VS90COMNTOOLS=%LOCAL_PROGRAM_FILES%\Microsoft Visual Studio 9.0\Common7\Tools\
 
 REM DOWNLOAD QT AND BUILD FROM SOURCE BECAUSE YOU NEED TO BUILD WITH THE SAME COMPILER AS PYTHON: VS2008
 @echo.
@@ -105,9 +110,7 @@ wget -nc -c -P "%QT5_HOME%" "http://download.qt.io/archive/qt/5.3/5.3.2/single/q
 pushd "%QT5_HOME%"
 "%DEPS%\7za.exe" x qt-everywhere-opensource-src-5.3.2.zip > nul
 mv qt-everywhere-opensource-src-5.3.2/* .
-set NOVS2008_PATH=%PATH%
-set VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\
-call "c:\program files\microsoft visual studio 9.0\vc\vcvarsall.bat"
+call "%LOCAL_PROGRAM_FILES%\microsoft visual studio 9.0\vc\vcvarsall.bat"
 call configure -prefix "%CD%\qtbase" -opensource -nomake tests -nomake examples -confirm-license -release -skip WebKit -no-opengl 2>&1 | tee -a "%DEPS%\build_qt.log"
 sed -i.orig s/\(Interlocked.*crement(\)/\1(LONG\*)/g qtmultimedia\src\plugins\directshow\camera\dscamerasession.cpp
 nmake 2>&1 | tee -a "%DEPS%\build_qt.log"
@@ -150,7 +153,7 @@ wget -nc -c -P "%DEPS%" "http://sourceforge.net/projects/pyqt/files/sip/sip-4.16
 pushd "%DEPS%"
 unzip -o -q sip-4.16.6.zip -d .
 cd sip-4.16.6
-call "C:\Program Files\Microsoft Visual Studio 9.0\VC\vcvarsall.bat"
+call "%LOCAL_PROGRAM_FILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat"
 python configure.py 2>&1 | tee -a "%DEPS%\build_python_deps.log"
 nmake 2>&1 | tee -a "%DEPS%\build_python_deps.log"
 nmake install 2>&1 | tee -a "%DEPS%\build_python_deps.log"
@@ -161,7 +164,7 @@ pushd "%DEPS%"
 unzip -o -q PyQt-gpl-5.3.2.zip -d .
 cd PyQt-gpl-5.3.2
 sed -i.orig s/\(\['webkitwidgets'\)\(\]\)/\1,'printsupport'\2/g configure.py
-call "C:\Program Files\Microsoft Visual Studio 9.0\VC\vcvarsall.bat"
+call "%LOCAL_PROGRAM_FILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat"
 python configure.py --confirm-license 2>&1 | tee -a "%DEPS%\build_python_deps.log"
 nmake 2>&1 | tee -a "%DEPS%\build_python_deps.log"
 nmake install 2>&1 | tee -a "%DEPS%\build_python_deps.log"

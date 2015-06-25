@@ -8,7 +8,7 @@ In order to ease newcomers to contribute to this great project, i thought that p
 
 Available environment targets
 
-* /win64: Windows 7 x64
+* /windows: Windows 7 (both x86 and x64)
 * to be created
 
 Goal ?
